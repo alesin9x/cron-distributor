@@ -1,0 +1,44 @@
+services:
+
+  nginx:
+    container_name: cron-distributor-nginx
+    build:
+      context: ./services/nginx/
+      dockerfile: Dockerfile
+    ports:
+      - "81:81"
+      - "82:82"
+      - "83:83"
+      - "84:84"
+      - "90:90"
+    volumes:
+      - ./services/nginx/hosts:/etc/nginx/sites-enabled
+      - ../src-a:/var/www
+
+  php:
+    container_name: cron-distributor-php
+    build:
+      context: ./services/php
+      dockerfile: Dockerfile
+    env_file:
+      - ./services/php/php.ini.linux.env # если ос linux
+    #      - ./services/php/php.ini.win.env # если ос windows
+    volumes:
+      - ./src:/var/www/cron-distributor
+      - ./.env:/var/www/cron-distributor/.env
+
+  mysql:
+    container_name: cron-distributor-mysql
+    build:
+      context: ./services/mysql
+      dockerfile: Dockerfile
+    environment:
+      - MYSQL_ROOT_PASSWORD=crondstrb
+    volumes:
+      - ./services/mysql/log:/var/log/mysql
+      - ./services/mysql/data:/var/backups/mysql
+      - ../.storage-mysql:/var/lib/mysql
+    ports:
+      - "9306:3306"
+    cap_add:
+      - SYS_NICE  # CAP_SYS_NICE

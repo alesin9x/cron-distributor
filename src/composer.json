@@ -1,0 +1,11 @@
+{
+  "name": "cron-distributor/test",
+  "description": "",
+  "type": "project",
+  "autoload": {
+    "psr-4": {
+      "common\\": "common/"
+    }
+  },
+  "require": {}
+}
